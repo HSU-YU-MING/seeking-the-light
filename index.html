@@ -109,6 +109,7 @@
                 <h3>遊戲選單</h3>
                 <button class="menu-option" onclick="game.saveGame()">💾 儲存進度</button>
                 <button class="menu-option" onclick="game.loadGame()">📂 讀取進度</button>
+                <button class="menu-option" onclick="game.reconfigureApiKey()">🔑 重新設定 API 金鑰</button>
                 <button class="menu-option" onclick="game.returnToTitle()">🏠 回到標題</button>
                 <button class="menu-option close" onclick="game.toggleMenu()">✕ 關閉選單</button>
             </div>
@@ -194,6 +195,10 @@
                     placeholder="AIza..." 
                     class="api-key-input"
                 >
+                <label class="remember-key-label">
+                    <input type="checkbox" id="remember-key-checkbox" checked>
+                    <span>在此裝置記住金鑰（共用電腦請取消勾選，金鑰將在瀏覽器關閉後清除）</span>
+                </label>
                 <div class="config-buttons">
                     <button class="config-btn primary" onclick="game.saveApiKey()">
                         💾 儲存金鑰
@@ -203,14 +208,14 @@
                     </button>
                 </div>
                 <p class="config-note">
-                    ℹ️ 金鑰將儲存在瀏覽器本地，不會上傳到任何伺服器。<br>
+                    ℹ️ 金鑰只會儲存在你自己的瀏覽器，不會上傳到任何伺服器。<br>
+                    勾選「記住金鑰」時，金鑰保留 30 天後會自動清除，需重新輸入。<br>
                     如果跳過設定，將使用本地語意匹配模式（準確度較低）。
                 </p>
             </div>
         </div>
     </div>
 
-    <script src="config.js"></script>
     <script src="story.js"></script>
     <script src="game.js"></script>
 </body>

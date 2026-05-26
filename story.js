@@ -266,7 +266,7 @@ const STORY_DATA = {
             },
             speaker: '師長',
             text: '（親切地微笑）你真有禮貌！企劃書我收下了，祝你們活動順利。',
-            audio: 'music/人聲/師長.MP3',
+            audio: 'music/人聲/師長.mp3',
             next: 'c2_success_3'
         },
         c2_success_3: {
@@ -287,7 +287,7 @@ const STORY_DATA = {
     chapter3: {
         c3_1: {
             id: 'c3_1',
-            background: 'images/大家都再往前走_我好像少了甚麼.png',
+            background: 'images/大家都再往前走 我好像少了甚麼.png',
             characters: {
                 center: 'images/男大學生.png'
             },
@@ -298,7 +298,7 @@ const STORY_DATA = {
         },
         c3_2: {
             id: 'c3_2',
-            background: 'images/大家都再往前走_我好像少了甚麼.png',
+            background: 'images/大家都再往前走 我好像少了甚麼.png',
             characters: {
                 center: 'images/男大學生.png'
             },

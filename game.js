@@ -16,18 +16,14 @@ class FoguangGame {
             good_heart: 0
         };
         
-        // 從配置檔案讀取 API 金鑰
-        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.GEMINI_API_KEY && API_CONFIG.GEMINI_API_KEY !== 'YOUR_API_KEY_HERE') {
-            this.apiKey = API_CONFIG.GEMINI_API_KEY;
-            this.useLocalMode = !API_CONFIG.USE_API;
-            console.log('✅ API 金鑰已從配置檔案載入');
-        } else {
-            this.apiKey = null;
-            this.useLocalMode = false;
-            console.log('⚠️ 未設定 API 金鑰,將在遊戲開始時詢問');
-        }
-        
+        // 金鑰一律由使用者在網頁上輸入，啟動時於 init() 從 localStorage 載入
+        this.apiKey = null;
+        this.useLocalMode = false;
+
         this.currentAIChallenge = null;
+
+        // 自動偵測到的可用模型（由 ListModels 解析，避免硬寫死的模型被下架）
+        this.resolvedModel = null;
         
         // 音訊播放器
         this.currentAudio = null;           // 對話音訊
@@ -37,33 +33,35 @@ class FoguangGame {
     // ===== 初始化 =====
     init() {
         console.log('🎮 佛光尋光記 AI 互動版啟動');
-        
-        // 檢查配置檔案
-        if (typeof API_CONFIG !== 'undefined') {
-            console.log('📁 配置檔案已載入');
-            if (API_CONFIG.GEMINI_API_KEY !== 'YOUR_API_KEY_HERE') {
-                console.log('✅ 使用配置檔案中的 API 金鑰');
-            } else {
-                console.log('⚠️ 配置檔案中未設定 API 金鑰');
+
+        // 依是否有存檔，顯示/隱藏「繼續遊戲」按鈕
+        this.refreshContinueButton();
+
+        // 載入金鑰：先看 sessionStorage（本次瀏覽期間有效），再看 localStorage（記住的金鑰，有 30 天效期）
+        const KEY_TTL = 30 * 24 * 60 * 60 * 1000; // 30 天
+        let savedApiKey = sessionStorage.getItem('foguang_api_key');
+
+        if (!savedApiKey) {
+            const lsKey = localStorage.getItem('foguang_api_key');
+            const savedAt = parseInt(localStorage.getItem('foguang_api_key_saved_at') || '0', 10);
+            if (lsKey) {
+                if (savedAt && (Date.now() - savedAt) > KEY_TTL) {
+                    // 超過效期，自動清除，要求重新輸入
+                    localStorage.removeItem('foguang_api_key');
+                    localStorage.removeItem('foguang_api_key_saved_at');
+                    localStorage.removeItem('foguang_model_cache');
+                    console.log('🧹 已儲存的金鑰超過 30 天，已自動清除，請重新輸入');
+                } else {
+                    savedApiKey = lsKey;
+                }
             }
-        } else {
-            console.log('⚠️ 未找到配置檔案 config.js');
-        }
-        
-        // 檢查是否有儲存的進度
-        const saveData = localStorage.getItem('foguang_ai_save');
-        const continueBtn = document.getElementById('continue-btn');
-        if (saveData && continueBtn) {
-            continueBtn.style.display = 'flex';
         }
 
-        // 如果配置檔案沒有設定金鑰,檢查本地儲存
-        if (!this.apiKey) {
-            const savedApiKey = localStorage.getItem('foguang_api_key');
-            if (savedApiKey) {
-                this.apiKey = savedApiKey;
-                console.log('✅ API 金鑰已從本地儲存載入');
-            }
+        if (savedApiKey) {
+            this.apiKey = savedApiKey;
+            console.log('✅ API 金鑰已載入（沿用上次設定）');
+        } else {
+            console.log('⚠️ 尚未設定 API 金鑰，將在遊戲開始時詢問');
         }
 
         // 設定寶石圖片
@@ -129,9 +127,10 @@ class FoguangGame {
         });
         document.getElementById(screenId).classList.add('active');
         
-        // 如果切換到標題畫面，播放標題音樂
+        // 如果切換到標題畫面，播放標題音樂並更新「繼續遊戲」按鈕狀態
         if (screenId === 'title-screen') {
             this.playBackgroundMusic('music/校園輕音樂.mp3', true);
+            this.refreshContinueButton();
         }
     }
 
@@ -142,26 +141,54 @@ class FoguangGame {
 
     saveApiKey() {
         const apiKeyInput = document.getElementById('api-key-input');
-        const apiKey = apiKeyInput.value.trim();
+        // 清掉複製貼上常見的雜質：半形/全形空白、換行、Tab、零寬字元
+        const apiKey = apiKeyInput.value
+            .replace(/[\s\u3000\u200B\u200C\u200D\uFEFF]/g, '')
+            .trim();
 
         if (!apiKey) {
             alert('請輸入 API 金鑰！');
             return;
         }
 
-        // 簡單驗證格式 (Gemini API key 通常以 AIza 開頭)
+        // 格式檢查放寬為「提醒」而非「硬擋」：Google 金鑰目前多以 AIza 開頭，
+        // 但格式日後可能調整，故僅在不符時提示，仍允許使用者繼續。
         if (!apiKey.startsWith('AIza')) {
-            alert('API 金鑰格式不正確！Gemini API 金鑰應該以 AIza 開頭。');
-            return;
+            const proceed = confirm(
+                '⚠️ 這把金鑰不是以 AIza 開頭，可能不是有效的 Google API 金鑰。\n\n' +
+                '若你確定沒貼錯，可以按「確定」繼續；否則按「取消」重新檢查。'
+            );
+            if (!proceed) return;
         }
 
+        // 依「在此裝置記住金鑰」勾選框決定儲存方式
+        const rememberEl = document.getElementById('remember-key-checkbox');
+        const rememberOnDevice = rememberEl ? rememberEl.checked : true;
+
         this.apiKey = apiKey;
-        localStorage.setItem('foguang_api_key', apiKey);
         this.useLocalMode = false;
-        
-        console.log('✅ API 金鑰已儲存');
-        alert('✅ API 金鑰設定成功！遊戲將使用 Gemini AI 判定模式。');
-        
+
+        // 先清掉兩種儲存，避免新舊殘留
+        localStorage.removeItem('foguang_api_key');
+        localStorage.removeItem('foguang_api_key_saved_at');
+        sessionStorage.removeItem('foguang_api_key');
+
+        if (rememberOnDevice) {
+            // 記住在此裝置：存 localStorage，並記時間戳供 30 天效期判斷
+            localStorage.setItem('foguang_api_key', apiKey);
+            localStorage.setItem('foguang_api_key_saved_at', String(Date.now()));
+        } else {
+            // 僅本次瀏覽期間：存 sessionStorage，瀏覽器一關即清空（適合共用電腦）
+            sessionStorage.setItem('foguang_api_key', apiKey);
+        }
+
+        // 換金鑰時清掉舊的模型快取，讓系統用新金鑰重新偵測可用模型
+        localStorage.removeItem('foguang_model_cache');
+        this.resolvedModel = null;
+
+        console.log('✅ API 金鑰已儲存（' + (rememberOnDevice ? '記住於此裝置，30 天效期' : '僅本次瀏覽期間') + '）');
+        alert('✅ API 金鑰設定成功！遊戲將自動偵測可用模型並使用 Gemini AI 判定。');
+
         this.showScreen('title-screen');
     }
 
@@ -173,6 +200,36 @@ class FoguangGame {
         alert('ℹ️ 將使用本地語意分析模式。\n判定準確度可能較低，建議設定 API 金鑰以獲得最佳體驗。');
         
         this.showScreen('title-screen');
+    }
+
+    // 重新設定 / 清除已儲存的金鑰（供遊戲選單呼叫）
+    reconfigureApiKey() {
+        const hasKey = !!localStorage.getItem('foguang_api_key');
+        if (hasKey) {
+            const clear = confirm(
+                '🔑 目前已儲存一把 API 金鑰。\n\n' +
+                '按「確定」清除已儲存的金鑰並重新輸入；\n' +
+                '按「取消」則保留現有金鑰、僅前往輸入畫面覆蓋。'
+            );
+            if (clear) {
+                localStorage.removeItem('foguang_api_key');
+                localStorage.removeItem('foguang_api_key_saved_at');
+                sessionStorage.removeItem('foguang_api_key');
+                localStorage.removeItem('foguang_model_cache');
+                this.apiKey = null;
+                this.resolvedModel = null;
+                this.useLocalMode = false;
+                console.log('🧹 已清除本地金鑰與模型快取');
+            }
+        }
+        // 關閉選單（若開著）並前往金鑰設定畫面
+        const menu = document.getElementById('game-menu');
+        if (menu && menu.classList.contains('active')) {
+            this.toggleMenu();
+        }
+        const input = document.getElementById('api-key-input');
+        if (input) input.value = '';
+        this.showApiConfig();
     }
 
     // ===== 關於畫面 =====
@@ -283,11 +340,9 @@ class FoguangGame {
             this.showDialogue(node.speaker, node.text);
         }
 
-        // 檢查是否要收集寶石
+        // 檢查是否要收集寶石（進入節點即記錄，動畫由 collectGem 內部延後播放）
         if (node.gem) {
-            setTimeout(() => {
-                this.collectGem(node.gem);
-            }, 1000);
+            this.collectGem(node.gem);
         }
     }
 
@@ -563,6 +618,110 @@ class FoguangGame {
         };
     }
 
+    // ===== 模型自動偵測 =====
+    // 用同一把金鑰呼叫 ListModels，取得「這把金鑰當下實際可用」的模型清單，
+    // 再依偏好挑一個。已下架的模型不會出現在清單裡，所以日後 Google 換版時無需手動改程式。
+    async resolveModel(forceRefresh) {
+        const CACHE_KEY = 'foguang_model_cache';
+        const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 小時
+
+        // 1) 先看快取（避免每次判定都多打一次 ListModels）
+        if (!forceRefresh) {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                if (raw) {
+                    const cached = JSON.parse(raw);
+                    if (cached && cached.model && (Date.now() - cached.ts) < CACHE_TTL) {
+                        return cached.model;
+                    }
+                }
+            } catch (e) {
+                // 快取壞掉就忽略，往下重新偵測
+            }
+        }
+
+        // 2) 呼叫 ListModels
+        try {
+            const listUrl = 'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000';
+            const resp = await fetch(listUrl, {
+                method: 'GET',
+                headers: { 'x-goog-api-key': this.apiKey }
+            });
+
+            if (!resp.ok) {
+                console.warn('ListModels 失敗，改用備用模型。狀態碼:', resp.status);
+                return this.fallbackModel();
+            }
+
+            const data = await resp.json();
+            const models = Array.isArray(data.models) ? data.models : [];
+
+            const candidates = models
+                .filter((m) => {
+                    const methods = m.supportedGenerationMethods || m.supported_actions || [];
+                    return methods.indexOf('generateContent') !== -1;
+                })
+                .map((m) => String(m.name || '').replace(/^models\//, ''))
+                .map((name) => ({ name: name, score: this.scoreModel(name) }))
+                .filter((c) => c.score >= 0)
+                .sort((a, b) => b.score - a.score);
+
+            if (candidates.length > 0) {
+                const chosen = candidates[0].name;
+                console.log('✅ 自動選用模型:', chosen);
+                try {
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({ model: chosen, ts: Date.now() }));
+                } catch (e) { /* localStorage 滿了也無妨 */ }
+                this.resolvedModel = chosen;
+                return chosen;
+            }
+
+            console.warn('清單中沒有合適的 generateContent 模型，改用備用模型。');
+            return this.fallbackModel();
+
+        } catch (error) {
+            console.warn('ListModels 發生例外，改用備用模型:', error);
+            return this.fallbackModel();
+        }
+    }
+
+    // 偏好評分：為這個「三好判定」分類任務挑最划算的模型
+    // flash-lite（免費額度最高、最便宜）> flash > pro（貴又限額，最後才用）
+    // 偏好穩定版而非 preview；版本越新加越多分，之後新版穩定後會自動升級。
+    scoreModel(name) {
+        const n = name.toLowerCase();
+        if (n.indexOf('gemini') !== 0) return -1;
+
+        // 排除非純文字 / 特殊用途的變體
+        const banned = ['embedding', 'aqa', 'vision', 'imagen', 'image', 'tts',
+                        'audio', 'live', 'learnlm', 'gemma', 'thinking', 'exp'];
+        for (let i = 0; i < banned.length; i++) {
+            if (n.indexOf(banned[i]) !== -1) return -1;
+        }
+
+        let score = 0;
+        if (n.indexOf('flash-lite') !== -1) score += 1000;
+        else if (n.indexOf('flash') !== -1) score += 800;
+        else if (n.indexOf('pro') !== -1) score += 200;
+        else score += 100;
+
+        if (n.indexOf('preview') !== -1) score -= 300; // 偏好穩定版
+        if (n.indexOf('latest') !== -1) score -= 150;   // 別名，可能指向實驗版
+
+        const m = n.match(/gemini-(\d+)(?:\.(\d+))?/);
+        if (m) {
+            const major = parseInt(m[1], 10) || 0;
+            const minor = m[2] ? parseInt(m[2], 10) : 0;
+            score += major * 20 + minor * 2;
+        }
+        return score;
+    }
+
+    // ListModels 打不通時的備用模型（目前的穩定、免費額度友善選擇）
+    fallbackModel() {
+        return 'gemini-2.5-flash-lite';
+    }
+
     // ===== Gemini API 分析 =====
     async analyzeWithGeminiAPI(input) {
         const challenge = this.currentAIChallenge;
@@ -597,14 +756,11 @@ ${challenge.prompt}
 }
 `;
 
-        try {
-            // Gemini 2.0 Flash API (2024年11月最新穩定版)
-            const model = 'gemini-2.0-flash';
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-            
-            console.log(`📡 呼叫 Gemini API (模型: ${model})...`);
-            
-            const response = await fetch(apiUrl, {
+        // 實際送出一次請求的內部函式，方便 404 時換模型重試
+        const callOnce = async (model) => {
+            const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
+            console.log('📡 呼叫 Gemini API (模型: ' + model + ')...');
+            return await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -618,16 +774,54 @@ ${challenge.prompt}
                     }]
                 })
             });
+        };
+
+        try {
+            // 自動偵測可用模型（會走快取）
+            let model = await this.resolveModel(false);
+            let response = await callOnce(model);
+
+            // 若選到的模型剛好被下架（404），清快取、強制重新偵測、再試一次
+            if (response.status === 404) {
+                console.warn('模型 ' + model + ' 回傳 404，重新偵測可用模型...');
+                model = await this.resolveModel(true);
+                response = await callOnce(model);
+            }
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                console.error('API 回應錯誤:', errorData);
+                const apiMsg = (errorData.error && errorData.error.message) || '未知錯誤';
+                console.error('API 回應錯誤:', response.status, errorData);
                 console.error('使用的模型:', model);
-                throw new Error(`API 錯誤: ${response.status} - ${errorData.error?.message || '未知錯誤'}`);
+
+                // 把不同錯誤碼講清楚，方便日後排查（不再被一句「切換本地模式」蓋掉）
+                let hint;
+                if (response.status === 400) {
+                    hint = '請求格式有誤 (400)。';
+                } else if (response.status === 403) {
+                    hint = '金鑰權限不足或未啟用 Generative Language API (403)。請到 Google AI Studio 確認金鑰。';
+                } else if (response.status === 404) {
+                    hint = '找不到可用模型 (404)。這把金鑰可能沒有任何可用的 Gemini 模型。';
+                } else if (response.status === 429) {
+                    hint = '已達免費額度上限 (429)。請稍後再試，或改用自己的金鑰。';
+                } else {
+                    hint = 'HTTP ' + response.status + '。';
+                }
+                throw new Error(hint + ' 詳細: ' + apiMsg);
             }
 
             const data = await response.json();
-            const responseText = data.candidates[0].content.parts[0].text;
+
+            // 防呆：Gemini 可能因安全機制攔截、或回傳沒有 candidates
+            const candidate = data.candidates && data.candidates[0];
+            const parts = candidate && candidate.content && candidate.content.parts;
+            const responseText = parts && parts[0] && parts[0].text;
+
+            if (!responseText) {
+                const blockReason = (data.promptFeedback && data.promptFeedback.blockReason) ||
+                                    (candidate && candidate.finishReason) || '未知';
+                throw new Error('模型沒有回傳可用內容（原因：' + blockReason + '）。可能被安全機制攔截，請換個說法再試。');
+            }
 
             console.log('Gemini API 回應:', responseText);
 
@@ -660,9 +854,9 @@ ${challenge.prompt}
 
         } catch (error) {
             console.error('Gemini API 呼叫失敗:', error);
-            
-            // Fallback 到本地模式
-            alert('⚠️ API 呼叫失敗，自動切換到本地分析模式。');
+
+            // 仍保留 fallback 到本地，但這次把真正的原因顯示出來，方便排查
+            alert('⚠️ AI 判定失敗，暫時切換到本地分析模式。\n\n原因：' + (error.message || error));
             return await this.analyzeWithLocalPatterns(input);
         }
     }
@@ -675,7 +869,7 @@ ${challenge.prompt}
         if (result.success) {
             this.playSoundEffect('music/成功音效.mp3');
         } else {
-            this.playSoundEffect('music/失敗音效.mp3');
+            this.playSoundEffect('music/失敗音效.MP3');
         }
 
         const resultDiv = document.getElementById('ai-result');
@@ -747,17 +941,14 @@ ${challenge.prompt}
         }
 
         console.log(`💎 收集寶石: ${gemType}`);
+        // 立刻記錄並更新顯示，確保此刻存檔就會包含這顆寶石（不受動畫延遲影響）
         this.collectedGems[gemType] = true;
+        this.updateGemsDisplay();
 
-        // 播放寶石收集音效
-        this.playGemSound();
-
-        // 播放收集動畫
-        this.playGemCollectAnimation(gemType);
-
-        // 更新顯示
+        // 動畫與音效延後播放，維持「對話先出現、寶石再亮」的節奏
         setTimeout(() => {
-            this.updateGemsDisplay();
+            this.playGemSound();
+            this.playGemCollectAnimation(gemType);
         }, 1000);
     }
 
@@ -911,8 +1102,18 @@ ${challenge.prompt}
         };
 
         localStorage.setItem('foguang_ai_save', JSON.stringify(saveData));
+        // 存檔後立即更新「繼續遊戲」按鈕狀態（不必等下次重新整理）
+        this.refreshContinueButton();
         alert('✅ 遊戲進度已儲存！');
         console.log('💾 儲存進度:', saveData);
+    }
+
+    // 依是否有存檔，顯示或隱藏標題畫面的「繼續遊戲」按鈕
+    refreshContinueButton() {
+        const continueBtn = document.getElementById('continue-btn');
+        if (!continueBtn) return;
+        const hasSave = !!localStorage.getItem('foguang_ai_save');
+        continueBtn.style.display = hasSave ? 'flex' : 'none';
     }
 
     loadGame() {
@@ -933,6 +1134,17 @@ ${challenge.prompt}
 
             this.showScreen('game-screen');
             this.loadNode(this.currentChapter, this.currentNode);
+
+            // 還原章節標題（原本讀檔沒做，會顯示成上一次的章節）
+            const chapterNames = {
+                'prologue': '序章',
+                'chapter1': '第一章：大一',
+                'chapter2': '第二章：大二',
+                'chapter3': '第三章：大四',
+                'ending': '結局'
+            };
+            this.updateChapterDisplay(chapterNames[this.currentChapter] || '');
+
             this.updateGemsDisplay();
 
             alert('✅ 進度讀取成功！');
@@ -952,8 +1164,11 @@ ${challenge.prompt}
             this.stopAudio();
             this.stopBackgroundMusic();
         
-            // 先關閉選單
-            this.toggleMenu();
+            // 只有在選單開啟時才關閉它（從結局選項呼叫時選單是關著的，不可無條件 toggle）
+            const menu = document.getElementById('game-menu');
+            if (menu && menu.classList.contains('active')) {
+                this.toggleMenu();
+            }
         
             // 切換到標題畫面（showScreen 會自動播放標題音樂）
             this.showScreen('title-screen');

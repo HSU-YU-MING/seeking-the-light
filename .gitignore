@@ -1,8 +1,5 @@
 # 佛光尋光記 - Git 忽略清單
 
-# API 配置檔案 (包含金鑰,不應上傳)
-config.js
-
 # 編輯器設定
 .vscode/
 .idea/
@@ -28,6 +25,6 @@ package-lock.json
 test/
 *.test.js
 
-# 說明: 
-# config.js 包含你的 API 金鑰,絕對不要上傳到 GitHub!
-# 如果要分享專案,請提供 config.js.example 作為範本
+# 說明:
+# 本專案不使用 config.js，API 金鑰一律由使用者在網頁上輸入，
+# 並只儲存在使用者自己的瀏覽器 localStorage，不會進入原始碼或上傳。
