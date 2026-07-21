@@ -6,8 +6,7 @@
 ![AI Powered](https://img.shields.io/badge/AI-Google%20Gemini-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-**▶ 直接試玩**：<https://hsu-yu-ming.github.io/seeking-the-light/>
-<!-- ↑ 請核對：這是 GitHub Pages 的標準網址格式，若你的 Pages 尚未啟用或網址不同，請替換為實際網址 -->
+**[▶ 直接試玩](https://hsu-yu-ming.github.io/seeking-the-light/) · [作品介紹與開發故事](https://cornhsu.com/seeking-the-light.html) · MIT**
 
 > **這份文件給誰看？** 一般玩家不需要讀它——點上面的連結即可直接遊玩。本文件是給**想了解評分／教學設計的老師與評審**、**想自行部署一份的人**，以及**未來要維護程式的開發者**。以下依這三種讀者排列。
 
