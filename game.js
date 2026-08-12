@@ -79,9 +79,9 @@ class FoguangGame {
     setupGemImages() {
         // 設定寶石圖片路徑
         const gemImages = {
-            'good-deed': 'images/善行之石.png',
-            'good-word': 'images/慧語之石.png',
-            'good-heart': 'images/淨念之石.png'
+            'good-deed': 'images/善行之石.webp',
+            'good-word': 'images/慧語之石.webp',
+            'good-heart': 'images/淨念之石.webp'
         };
         
         // 為每個寶石 slot 設定背景圖片

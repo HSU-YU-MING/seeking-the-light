@@ -6,9 +6,9 @@ const STORY_DATA = {
     prologue: {
         p1: {
             id: 'p1',
-            background: 'images/體育館.png',
+            background: 'images/體育館.webp',
             characters: {
-                center: 'images/星雲大師.png'
+                center: 'images/星雲大師.webp'
             },
             speaker: '星雲大師使者',
             text: '孩子，人生的路途，唯有心存善念，口吐芬芳，身行好事，方能圓滿。',
@@ -17,10 +17,10 @@ const STORY_DATA = {
         },
         p2: {
             id: 'p2',
-            background: 'images/體育館.png',
+            background: 'images/體育館.webp',
             characters: {
-                left: 'images/星雲大師.png',
-                center: 'images/男大學生.png'
+                left: 'images/星雲大師.webp',
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '（揉眼睛）剛剛...是在做夢嗎？台上好像有一道金光...',
@@ -29,9 +29,9 @@ const STORY_DATA = {
         },
         p3: {
             id: 'p3',
-            background: 'images/體育館.png',
+            background: 'images/體育館.webp',
             characters: {
-                center: 'images/星雲大師.png'
+                center: 'images/星雲大師.webp'
             },
             speaker: '星雲大師使者',
             text: '這不是夢。我交給你一塊石板，你需要在大學四年中，找回「三好之石」。',
@@ -40,9 +40,9 @@ const STORY_DATA = {
         },
         p4: {
             id: 'p4',
-            background: 'images/體育館.png',
+            background: 'images/體育館.webp',
             characters: {
-                center: 'images/星雲大師.png'
+                center: 'images/星雲大師.webp'
             },
             speaker: '星雲大師使者',
             text: '只有真正實踐「做好事、說好話、存好心」，才能點亮每一顆寶石。去吧，用你的行動證明自己。',
@@ -51,9 +51,9 @@ const STORY_DATA = {
         },
         p5: {
             id: 'p5',
-            background: 'images/體育館.png',
+            background: 'images/體育館.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '（握著石板）好神奇...我一定要找到這三顆寶石！',
@@ -67,9 +67,9 @@ const STORY_DATA = {
     chapter1: {
         c1_1: {
             id: 'c1_1',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                center: 'images/睡著女大生.png'
+                center: 'images/睡著女大生.webp'
             },
             speaker: '旁白',
             text: '大一的生活讓你忙得焦頭爛額。這天下午，你累倒在教室睡著了...',
@@ -77,9 +77,9 @@ const STORY_DATA = {
         },
         c1_2: {
             id: 'c1_2',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                center: 'images/女大生大喊.png',
+                center: 'images/女大生大喊.webp',
                 
             },
             speaker: '同學',
@@ -89,9 +89,9 @@ const STORY_DATA = {
         },
         c1_3: {
             id: 'c1_3',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                center: 'images/女大生大喊.png'
+                center: 'images/女大生大喊.webp'
             },
             speaker: '同學',
             text: '（急得快哭了）剛剛還在的...一定是掉在教室裡了！',
@@ -100,9 +100,9 @@ const STORY_DATA = {
         },
         c1_ai: {
             id: 'c1_ai',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                center: 'images/男大學生.png',
+                center: 'images/男大學生.webp',
                 
             },
             speaker: '旁白',
@@ -132,9 +132,9 @@ const STORY_DATA = {
         },
         c1_success_1: {
             id: 'c1_success_1',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '（放下背包，開始認真搜尋）讓我來幫你找找看！',
@@ -143,10 +143,10 @@ const STORY_DATA = {
         },
         c1_success_2: {
             id: 'c1_success_2',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/遺失的耳機.png'
+                left: 'images/男大學生.webp',
+                right: 'images/遺失的耳機.webp'
             },
             speaker: '你',
             text: '（在垃圾桶旁邊找到了）找到了！在這裡！',
@@ -155,10 +155,10 @@ const STORY_DATA = {
         },
         c1_success_3: {
             id: 'c1_success_3',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/女大生大喊.png'
+                left: 'images/男大學生.webp',
+                right: 'images/女大生大喊.webp'
             },
             speaker: '同學',
             text: '太感謝你了！你真是好人！我以後一定會記得你的恩情！',
@@ -167,9 +167,9 @@ const STORY_DATA = {
         },
         c1_success_4: {
             id: 'c1_success_4',
-            background: 'images/教室.png',
+            background: 'images/教室.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '旁白',
             text: '一道綠光從石板中閃現...你獲得了【善行之石】！原來，好事就是純粹的伸出援手。',
@@ -183,9 +183,9 @@ const STORY_DATA = {
     chapter2: {
         c2_1: {
             id: 'c2_1',
-            background: 'images/走廊的盡頭是課外組.png',
+            background: 'images/走廊的盡頭是課外組.webp',
             characters: {
-                center: 'images/女大生拿著資料.png'
+                center: 'images/女大生拿著資料.webp'
             },
             speaker: '旁白',
             text: '大二了，為了社團活動你忙著跑行政流程。今天你要把企劃書送到課外活動組。',
@@ -193,10 +193,10 @@ const STORY_DATA = {
         },
         c2_2: {
             id: 'c2_2',
-            background: 'images/走廊的盡頭是課外組.png',
+            background: 'images/走廊的盡頭是課外組.webp',
             characters: {
-                left: 'images/女大生拿著資料.png',
-                right: 'images/熱心的學長.png'
+                left: 'images/女大生拿著資料.webp',
+                right: 'images/熱心的學長.webp'
             },
             speaker: '學長',
             text: '課外活動組就在走廊盡頭。記得要有禮貌喔，師長們很重視這個。',
@@ -205,9 +205,9 @@ const STORY_DATA = {
         },
         c2_3: {
             id: 'c2_3',
-            background: 'images/課外活動組.png',
+            background: 'images/課外活動組.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '（深吸一口氣）好，我準備好了。這是展現「說好話」的時刻！',
@@ -216,10 +216,10 @@ const STORY_DATA = {
         },
         c2_ai: {
             id: 'c2_ai',
-            background: 'images/課外活動組.png',
+            background: 'images/課外活動組.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/課外哥哥姐姐.png'
+                left: 'images/男大學生.webp',
+                right: 'images/課外哥哥姐姐.webp'
             },
             speaker: '旁白',
             text: '你走進課外活動組辦公室。你會怎麼說？',
@@ -248,10 +248,10 @@ const STORY_DATA = {
         },
         c2_success_1: {
             id: 'c2_success_1',
-            background: 'images/課外活動組.png',
+            background: 'images/課外活動組.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/課外哥哥姐姐.png'
+                left: 'images/男大學生.webp',
+                right: 'images/課外哥哥姐姐.webp'
             },
             speaker: '你',
             text: '（有禮貌地問候並說明來意）',
@@ -259,10 +259,10 @@ const STORY_DATA = {
         },
         c2_success_2: {
             id: 'c2_success_2',
-            background: 'images/課外活動組.png',
+            background: 'images/課外活動組.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/課外哥哥姐姐.png'
+                left: 'images/男大學生.webp',
+                right: 'images/課外哥哥姐姐.webp'
             },
             speaker: '師長',
             text: '（親切地微笑）你真有禮貌！企劃書我收下了，祝你們活動順利。',
@@ -271,9 +271,9 @@ const STORY_DATA = {
         },
         c2_success_3: {
             id: 'c2_success_3',
-            background: 'images/課外活動組.png',
+            background: 'images/課外活動組.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '旁白',
             text: '一道藍光從石板中綻放...你獲得了【慧語之石】！原來，語言的尊重能建立溫暖的連結。',
@@ -287,9 +287,9 @@ const STORY_DATA = {
     chapter3: {
         c3_1: {
             id: 'c3_1',
-            background: 'images/大家都再往前走 我好像少了甚麼.png',
+            background: 'images/大家都再往前走 我好像少了甚麼.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '（看著石板）明明做了好事、說了好話，為什麼還是沒拿到最後一顆石頭？',
@@ -298,9 +298,9 @@ const STORY_DATA = {
         },
         c3_2: {
             id: 'c3_2',
-            background: 'images/大家都再往前走 我好像少了甚麼.png',
+            background: 'images/大家都再往前走 我好像少了甚麼.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '難道是因為我平常愛講地獄梗？還是我太功利了？',
@@ -309,10 +309,10 @@ const STORY_DATA = {
         },
         c3_3: {
             id: 'c3_3',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/女大生大喊.png'
+                left: 'images/男大學生.webp',
+                right: 'images/女大生大喊.webp'
             },
             speaker: '同學',
             text: '（跑過來）嘿！還記得我嗎？大一你幫我找耳機的時候，我就覺得你心地很好。',
@@ -321,10 +321,10 @@ const STORY_DATA = {
         },
         c3_4: {
             id: 'c3_4',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/女大生大喊.png'
+                left: 'images/男大學生.webp',
+                right: 'images/女大生大喊.webp'
             },
             speaker: '同學',
             text: '雖然你平常愛開玩笑，但我知道你內心其實很溫柔。今天是我們畢業的日子，真想好好謝謝你！',
@@ -333,10 +333,10 @@ const STORY_DATA = {
         },
         c3_ai: {
             id: 'c3_ai',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/女大生大喊.png'
+                left: 'images/男大學生.webp',
+                right: 'images/女大生大喊.webp'
             },
             speaker: '旁白',
             text: '這是你展現「存好心」的時刻。你會怎麼回應？',
@@ -366,10 +366,10 @@ const STORY_DATA = {
         },
         c3_success_1: {
             id: 'c3_success_1',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                left: 'images/男大學生.png',
-                right: 'images/面帶微笑的一個同學.png'
+                left: 'images/男大學生.webp',
+                right: 'images/面帶微笑的一個同學.webp'
             },
             speaker: '你',
             text: '（真誠地回應）',
@@ -377,9 +377,9 @@ const STORY_DATA = {
         },
         c3_success_2: {
             id: 'c3_success_2',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '（恍然大悟）原來...存好心不是刻意的任務，而是發自內心的祝福！',
@@ -388,9 +388,9 @@ const STORY_DATA = {
         },
         c3_success_3: {
             id: 'c3_success_3',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '旁白',
             text: '金色的光芒從石板中湧現...你獲得了【淨念之石】！三顆寶石終於集齊了！',
@@ -404,9 +404,9 @@ const STORY_DATA = {
     ending: {
         e1: {
             id: 'e1',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                center: 'images/星雲大師.png'
+                center: 'images/星雲大師.webp'
             },
             speaker: '星雲大師使者',
             text: '（聲音再次響起）你從迷惘到覺悟，已將「三好」融入生命。',
@@ -416,9 +416,9 @@ const STORY_DATA = {
         },
         e2: {
             id: 'e2',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                center: 'images/星雲大師.png'
+                center: 'images/星雲大師.webp'
             },
             speaker: '星雲大師使者',
             text: '這三顆寶石不是目標，而是你修行的見證。真正的寶藏，在你心中。',
@@ -427,9 +427,9 @@ const STORY_DATA = {
         },
         e3: {
             id: 'e3',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '你',
             text: '（握著發光的石板）謝謝您，大師。我明白了，三好不是任務，而是生活的一部分。',
@@ -438,9 +438,9 @@ const STORY_DATA = {
         },
         e4: {
             id: 'e4',
-            background: 'images/一起畢業.png',
+            background: 'images/一起畢業.webp',
             characters: {
-                center: 'images/男大學生.png'
+                center: 'images/男大學生.webp'
             },
             speaker: '旁白',
             text: '— 尋光之旅 完 —\n\n感謝遊玩「佛光尋光記：三好之旅 AI 互動版」\n\n作者：許彧銘、許慧柔\nAI 整合版本：2025/11/28',
