@@ -874,22 +874,55 @@ ${challenge.prompt}
 
         const resultDiv = document.getElementById('ai-result');
         resultDiv.className = result.success ? 'success' : 'failure';
-        resultDiv.innerHTML = `
-            <div class="result-header">
-                ${result.success ? '✅ 判定通過！' : '❌ 判定未通過'}
-            </div>
-            <div class="result-content">
-                ${result.analysis}
-                ${result.mode === 'local' ? '<br><small style="color: #64748b;">(使用本地語意分析)</small>' : ''}
-                ${result.mode === 'api' ? '<br><small style="color: #64748b;">(AI Powered by Google Gemini)</small>' : ''}
-            </div>
-            <div class="result-actions">
-                ${result.success ? 
-                    `<button class="result-btn primary" onclick="game.proceedAfterAI(true)">繼續劇情 →</button>` :
-                    `<button class="result-btn secondary" onclick="game.retryAIInput()">重新回答</button>`
-                }
-            </div>
-        `;
+
+        // ⚠️ 這一段刻意不用 innerHTML。
+        // `result.analysis` 是 Gemini 回傳的文字，而玩家的自由輸入會被送進 prompt，
+        // 模型有機會把它原樣吐回來——用 innerHTML 等於讓玩家的輸入變成可執行的 HTML
+        // （<img onerror=...> 之類），是一條自作自受的注入路徑。
+        // 這裡改成：固定結構用 DOM 建，外來文字一律走 textContent 讓瀏覽器自動逸出。
+        // 換行靠 CSS 的 white-space: pre-wrap（見 style.css 的 .result-text），
+        // 不要為了排版又改回 innerHTML 或 <br> 字串拼接。
+        resultDiv.replaceChildren();
+
+        const header = document.createElement('div');
+        header.className = 'result-header';
+        header.textContent = result.success ? '✅ 判定通過！' : '❌ 判定未通過';
+
+        const content = document.createElement('div');
+        content.className = 'result-content';
+
+        const analysisText = document.createElement('div');
+        analysisText.className = 'result-text';
+        // ← 唯一的外來資料，逸出後才進 DOM。
+        // String() 是防呆：模型偶爾會把 analysis 回成物件，直接 .trim() 會炸掉整個結果畫面。
+        analysisText.textContent = String(result.analysis ?? '').trim();
+        content.appendChild(analysisText);
+
+        const modeLabel = result.mode === 'local' ? '(使用本地語意分析)'
+                        : result.mode === 'api' ? '(AI Powered by Google Gemini)'
+                        : '';
+        if (modeLabel) {
+            const note = document.createElement('small');
+            note.className = 'result-note';
+            note.textContent = modeLabel;
+            content.appendChild(note);
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'result-actions';
+        const btn = document.createElement('button');
+        if (result.success) {
+            btn.className = 'result-btn primary';
+            btn.textContent = '繼續劇情 →';
+            btn.addEventListener('click', () => game.proceedAfterAI(true));
+        } else {
+            btn.className = 'result-btn secondary';
+            btn.textContent = '重新回答';
+            btn.addEventListener('click', () => game.retryAIInput());
+        }
+        actions.appendChild(btn);
+
+        resultDiv.append(header, content, actions);
         resultDiv.style.display = 'block';
 
         // 如果成功，更新分數

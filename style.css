@@ -952,6 +952,20 @@ body {
     margin-bottom: 20px;
 }
 
+/* 判定結果的文字是用 textContent 塞進去的（見 game.js 的 showAIResult），
+   所以 \n 要靠 pre-wrap 才會斷行；wrap-word 保證長字串不會撐破版面。 */
+.result-text {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+/* 取代原本硬寫在 HTML 字串裡的 <br><small style="color:#64748b"> */
+.result-note {
+    display: block;
+    margin-top: 8px;
+    color: #64748b;
+}
+
 .result-actions {
     display: flex;
     gap: 15px;

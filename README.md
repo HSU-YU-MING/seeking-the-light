@@ -6,7 +6,7 @@
 ![AI Powered](https://img.shields.io/badge/AI-Google%20Gemini-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-**[▶ 直接試玩](https://hsu-yu-ming.github.io/seeking-the-light/) · [作品介紹與開發故事](https://cornhsu.com/seeking-the-light) · MIT**
+**[▶ 直接試玩](https://play.cornhsu.com/seeking-the-light/) · [作品介紹與開發故事](https://cornhsu.com/seeking-the-light) · MIT**
 
 > **這份文件給誰看？** 一般玩家不需要讀它——點上面的連結即可直接遊玩。本文件是給**想了解評分／教學設計的老師與評審**、**想自行部署一份的人**，以及**未來要維護程式的開發者**。以下依這三種讀者排列。
 
@@ -89,7 +89,7 @@
 
 ### 線上試玩（已部署）
 
-最快的方式就是直接開最上面的 GitHub Pages 連結，無需安裝任何東西。以下兩種方式適合想跑「自己一份」的人。
+最快的方式就是直接開最上面的 [https://play.cornhsu.com/seeking-the-light/](https://play.cornhsu.com/seeking-the-light/)，無需安裝任何東西。以下兩種方式適合想跑「自己一份」的人。
 
 ### 自行部署到 GitHub Pages
 
@@ -162,21 +162,21 @@ seeking-the-light/
 ├── README.md           # 說明文件
 ├── LICENSE             # 授權條款
 ├── .gitignore          # Git 忽略清單
-├── images/             # 圖片資源（29 張，平鋪於同一層）
-│   ├── 體育館.png              # 場景背景
-│   ├── 教室.png
-│   ├── 走廊的盡頭是課外組.png
-│   ├── 課外活動組.png
-│   ├── 一起畢業.png
-│   ├── 大家都再往前走 我好像少了甚麼.png   # 注意：檔名含空格，非底線
-│   ├── 星雲大師.png            # 角色立繪
-│   ├── 男大學生.png
-│   ├── 女大學生.png
+├── images/             # 圖片資源（19 張，平鋪於同一層）
+│   ├── 體育館.webp              # 場景背景
+│   ├── 教室.webp
+│   ├── 走廊的盡頭是課外組.webp
+│   ├── 課外活動組.webp
+│   ├── 一起畢業.webp
+│   ├── 大家都再往前走 我好像少了甚麼.webp   # 注意：檔名含空格，非底線
+│   ├── 星雲大師.webp            # 角色立繪
+│   ├── 男大學生.webp
+│   ├── 女大學生.webp
 │   ├── ...                     # 其餘角色立繪
-│   ├── 善行之石.png            # 三顆寶石
-│   ├── 慧語之石.png
-│   ├── 淨念之石.png
-│   └── ...                     # 寶石托盤、企劃書、耳機等物品
+│   ├── 善行之石.webp            # 三顆寶石
+│   ├── 慧語之石.webp
+│   ├── 淨念之石.webp
+│   └── ...                     # 遺失的耳機等物品
 └── music/              # 音訊資源（27 個）
     ├── 校園輕音樂.mp3          # 背景音樂
     ├── 成功音效.mp3            # 音效
@@ -217,9 +217,9 @@ seeking-the-light/
 chapter1: {
     c1_1: {
         id: 'c1_1',
-        background: 'images/教室.png',
+        background: 'images/教室.webp',
         characters: {
-            center: 'images/女大學生.png'
+            center: 'images/女大學生.webp'
         },
         speaker: '旁白',
         text: '你的對話內容...',
