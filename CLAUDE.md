@@ -103,11 +103,15 @@ alpha 通道，尺寸不變。
   `遇上耳機不見好友.webp`、`鄙視ㄉ男人.webp`、`靠背難過的延畢生.webp`。
   `deploy.ps1` 是整個資料夾複製，所以每次部署都會一起推上線。看起來像是劇情刪節後
   留下的素材——刪之前先確認（`grep -n "檔名" story.js game.js index.html style.css`）。
-- **`showAIResult()` 用 `innerHTML` 直接塞 `result.analysis`**（Gemini 回傳的文字），
-  沒有逸出。玩家的自由輸入會進 prompt、模型有機會把它原樣吐回來，等於一條
-  自作自受的 HTML 注入路徑。金鑰是玩家自己的、影響只及於自己，所以不緊急，
-  但要動這段的話應該改成逸出後再插入，或分成 `textContent` + 固定結構。
-  同一函式裡的其他欄位都已經是硬編碼字串，只有這一處是外來資料。
+- ~~**`showAIResult()` 用 `innerHTML` 直接塞 `result.analysis`**（Gemini 回傳的文字），沒有逸出。~~
+  **已修（commit `8f24f2a`），這裡 2026-11-13 才補上劃掉。** 現在是固定結構用 DOM 建、
+  外來文字一律走 `textContent`（`game.js:865` 起，函式裡有一整段註解說明為什麼不能改回
+  `innerHTML`）。換行靠 CSS 的 `white-space: pre-wrap`。
+  > **當時的附帶發現**：`analysis` 裡的換行本來就是要分段的，但在 `innerHTML` 之下被摺成空白
+  > ——**它從來沒真的斷過行**。補 `pre-wrap` 之後作者原本的分段才呈現出來。
+  >
+  > 這一條原本只有 `D:\技術債帳.md` 記了已修，這份 CLAUDE.md 停在舊版，
+  > 是 2026-11-13 掃描抓到的四組「一份說已修、一份說還沒」之一。
 
 ## 現況與 README 不符之處
 
